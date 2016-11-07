@@ -1,3 +1,5 @@
+from time import mktime
+
 import feedparser
 import yaml
 from pocket import Pocket
@@ -18,31 +20,25 @@ except yaml.YAMLError as exception:
     exit(1)
     db = {}
 except FileNotFoundError as exception:
-    db = {"titles": {}}
+    db = {"sites": {}}
 
 p = Pocket(
     consumer_key=config["consumer_key"],
     access_token=config["access_token"]
 )
-for url in config["urls"]:
-    f = feedparser.parse(url)
-    feedtitle = f["feed"]["title"]
-    print(feedtitle)
-    if feedtitle not in db["titles"]:
-        db["titles"][feedtitle] = []
+for sitetitle, site in config["sites"].items():
+    f = feedparser.parse(site["url"])
+    # feedtitle = f["feed"]["title"]
+    print(sitetitle)
+    if sitetitle not in db["sites"]:
+        db["sites"][sitetitle] = []
     for article in f.entries:
-        if article.title not in db["titles"][feedtitle]:
+        if article.title not in db["sites"][sitetitle]:
             print(article.title)
-            # r = requests.get(
-            #     'https://www.instapaper.com/api/add',
-            #     auth=(config["user"], config["password"]),
-            #     data={"url": article.link, "title": article.title}
-            # )
-            # if r.status_code != 201:
-            #     print("Return code: " + str(r.status_code))
-            #     exit(1)
-            p.bulk_add(url=article.link, item_id=None, title=article.title)
-            db["titles"][feedtitle].append(article.title)
+            tags = ",".join(site["tags"])
+            published = mktime(article.published_parsed)
+            p.bulk_add(url=article.link, item_id=None, title=article.title, tags=tags, time=published)
+            db["sites"][sitetitle].append(article.title)
 
 p.commit()
 
