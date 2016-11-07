@@ -1,0 +1,4 @@
+feedparser==5.2.1
+pocket-api==0.1.5
+PyYAML==3.12
+requests==2.11.1
