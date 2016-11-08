@@ -33,9 +33,17 @@ for sitetitle, site in config["sites"].items():
         db["sites"][sitetitle] = []
     for article in f.entries:
         if article.title not in db["sites"][sitetitle]:
-            print(article.title)
-            tags = ",".join(site["tags"])
-            published = mktime(article.published_parsed)
+            print(article)
+            if site["tags"]:
+                tags = ",".join(site["tags"])
+            else:
+                tags = None
+            if "published_parsed" in article:
+                published = mktime(article.published_parsed)
+            elif "updated_parsed" in article:
+                published = mktime(article.updated_parsed)
+            else:
+                published = None
             p.bulk_add(url=article.link, item_id=None, title=article.title, tags=tags, time=published)
             db["sites"][sitetitle].append(article.title)
 
