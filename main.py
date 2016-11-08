@@ -7,11 +7,10 @@ from pocket import Pocket
 with open("config.yaml", 'r') as stream:
     try:
         config = yaml.load(stream)
-    except yaml.YAMLError as exception:
+    except (yaml.YAMLError, FileNotFoundError) as exception:
         print(exception)
-        config = {"urls": "test"}
+        config = None
         exit(1)
-
 try:
     with open("db.yaml", 'r') as stream:
         db = yaml.load(stream)
