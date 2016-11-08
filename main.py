@@ -33,7 +33,7 @@ for sitetitle, site in config["sites"].items():
         db["sites"][sitetitle] = []
     for article in f.entries:
         if article.title not in db["sites"][sitetitle]:
-            print(article)
+            print(article.title)
             if site["tags"]:
                 tags = ",".join(site["tags"])
             else:
