@@ -34,10 +34,10 @@ for sitetitle, site in config["sites"].items():
     for article in f.entries:
         if article.title not in db["sites"][sitetitle]:
             print(article.title)
+            tagarray = [sitetitle]
             if site["tags"]:
-                tags = ",".join(site["tags"])
-            else:
-                tags = None
+                tagarray.extend(site["tags"])
+            tags = ",".join(tagarray)
             if "published_parsed" in article:
                 published = mktime(article.published_parsed)
             elif "updated_parsed" in article:
