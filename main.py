@@ -2,7 +2,7 @@ from time import mktime
 
 import feedparser
 import yaml
-from pocket import Pocket
+from wallabag_api.wallabag import Wallabag
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -21,10 +21,12 @@ except yaml.YAMLError as exception:
 except FileNotFoundError as exception:
     db = {"sites": {}}
 
-p = Pocket(
-    consumer_key=config["consumer_key"],
-    access_token=config["access_token"]
-)
+token = Wallabag.get_token(**config["wallabag"])
+
+wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
+                client_id=config["wallabag"]["client_id"], token=token)
+exit()
+
 for sitetitle, site in config["sites"].items():
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
@@ -44,7 +46,7 @@ for sitetitle, site in config["sites"].items():
                 published = mktime(article.updated_parsed)
             else:
                 published = None
-            p.bulk_add(url=article.link, item_id=None, title=article.title, tags=tags, time=published)
+            wall.post_entries(url=article.link, title=article.title, tags=tags)
             db["sites"][sitetitle].append(article.title)
 
 p.commit()
