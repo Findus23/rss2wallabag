@@ -2,7 +2,7 @@ import sys
 import yaml
 from urllib.parse import urlparse
 
-with open("sites.yml", 'r') as stream:
+with open("sites.yaml", 'r') as stream:
     sites = yaml.load(stream)
 
 try:
@@ -25,5 +25,5 @@ except Exception as e:
     print("invalid input")
     print(e)
 
-with open('sites.yml', 'w') as outfile:
+with open('sites.yaml', 'w') as outfile:
     yaml.dump(sites, outfile, default_flow_style=False)
