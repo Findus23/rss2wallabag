@@ -3,6 +3,7 @@ from time import mktime
 import feedparser
 import yaml
 from wallabag_api.wallabag import Wallabag
+import github_stars
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -33,7 +34,10 @@ token = Wallabag.get_token(**config["wallabag"])
 wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
                 client_id=config["wallabag"]["client_id"], token=token)
 
-for sitetitle, site in sites.items():
+feeds = sites.items()
+feeds.append(github_stars.get_starred_repos(config["github_username"]))
+
+for sitetitle, site in feeds:
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
     print(sitetitle)
