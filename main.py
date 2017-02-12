@@ -35,7 +35,7 @@ wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"
                 client_id=config["wallabag"]["client_id"], token=token)
 
 feeds = sites.items()
-feeds.append(github_stars.get_starred_repos(config["github_username"]))
+feeds.update(github_stars.get_starred_repos(config["github_username"]))
 
 for sitetitle, site in feeds:
     f = feedparser.parse(site["url"])
