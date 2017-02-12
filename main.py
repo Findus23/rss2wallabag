@@ -11,6 +11,13 @@ with open("config.yaml", 'r') as stream:
         print(exception)
         config = None
         exit(1)
+with open("sites.yaml", 'r') as stream:
+    try:
+        sites = yaml.load(stream)
+    except (yaml.YAMLError, FileNotFoundError) as exception:
+        print(exception)
+        sites = None
+        exit(1)
 try:
     with open("db.yaml", 'r') as stream:
         db = yaml.load(stream)
@@ -25,9 +32,8 @@ token = Wallabag.get_token(**config["wallabag"])
 
 wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
                 client_id=config["wallabag"]["client_id"], token=token)
-exit()
 
-for sitetitle, site in config["sites"].items():
+for sitetitle, site in sites.items():
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
     print(sitetitle)
@@ -48,8 +54,6 @@ for sitetitle, site in config["sites"].items():
                 published = None
             wall.post_entries(url=article.link, title=article.title, tags=tags)
             db["sites"][sitetitle].append(article.title)
-
-p.commit()
 
 with open("db.yaml", 'w') as stream:
     yaml.dump(db, stream, default_flow_style=False)
