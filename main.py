@@ -34,10 +34,9 @@ token = Wallabag.get_token(**config["wallabag"])
 wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
                 client_id=config["wallabag"]["client_id"], token=token)
 
-feeds = sites.items()
-feeds.update(github_stars.get_starred_repos(config["github_username"]))
+sites.update(github_stars.get_starred_repos(config["github_username"]))
 
-for sitetitle, site in feeds:
+for sitetitle, site in sites.items():
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
     print(sitetitle)
