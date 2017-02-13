@@ -8,5 +8,5 @@ def get_starred_repos(username):
     stars = r.json()
     feeds = {}
     for repo in stars:
-        feeds[repo["full_name"]] = {"url": repo["url"] + "/releases.atom", "tags": ["github", repo["name"]]}
+        feeds[repo["full_name"]] = {"url": repo["html_url"] + "/releases.atom", "tags": ["github", repo["name"]]}
     return feeds
