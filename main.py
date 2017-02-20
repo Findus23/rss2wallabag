@@ -9,7 +9,7 @@ import github_stars
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -36,7 +36,6 @@ sites = github_stars.get_starred_repos(config["github_username"], sites)
 for sitetitle, site in sites.items():
     logger.info(sitetitle + ": Downloading feed")
     f = feedparser.parse(site["url"])
-    (sitetitle + ": feed parsed")
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
         for article in f.entries:
@@ -54,7 +53,7 @@ for sitetitle, site in sites.items():
                 published = mktime(article.updated_parsed)
             else:
                 published = None
-            logger.debug(article.title + ": add to wallabag")
+            logger.info(article.title + ": add to wallabag")
             wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
