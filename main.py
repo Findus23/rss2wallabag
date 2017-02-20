@@ -8,8 +8,8 @@ import github_stars
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -36,9 +36,9 @@ sites = github_stars.get_starred_repos(config["github_username"], sites)
 for sitetitle, site in sites.items():
     logger.info(sitetitle + ": Downloading feed")
     f = feedparser.parse(site["url"])
-    logger.debug(sitetitle + ": feed parsed")
+    (sitetitle + ": feed parsed")
     # feedtitle = f["feed"]["title"]
-    if "latest_article" in sites:
+    if "latest_article" in site:
         for article in f.entries:
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
@@ -59,7 +59,7 @@ for sitetitle, site in sites.items():
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
-        logger.warning(site + ": Downloading feed")
+        logger.warning(sitetitle + ": Downloading feed")
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("sites.yaml", 'w') as stream:

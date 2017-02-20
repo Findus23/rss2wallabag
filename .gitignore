@@ -2,3 +2,4 @@
 config.yaml
 sites.yml
 db.yaml
+__pycache__/
