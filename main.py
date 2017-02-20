@@ -7,6 +7,7 @@ from wallabag_api.wallabag import Wallabag
 import github_stars
 
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -33,16 +34,16 @@ wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"
 sites = github_stars.get_starred_repos(config["github_username"], sites)
 
 for sitetitle, site in sites.items():
-    logger.info(sitetitle, "Downloading feed")
+    logger.info(sitetitle + ": Downloading feed")
     f = feedparser.parse(site["url"])
-    logger.debug(sitetitle, "feed parsed")
+    logger.debug(sitetitle + ": feed parsed")
     # feedtitle = f["feed"]["title"]
     if "latest_article" in sites:
         for article in f.entries:
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
                 break
-            logger.info(article.title, "aricle found")
+            logger.info(article.title + ": aricle found")
             taglist = [sitetitle]
             if site["tags"]:
                 taglist.extend(site["tags"])
@@ -53,12 +54,12 @@ for sitetitle, site in sites.items():
                 published = mktime(article.updated_parsed)
             else:
                 published = None
-            logger.debug(article.title, "add to wallabag")
+            logger.debug(article.title + ": add to wallabag")
             wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
-        logger.debug(sitetitle, "no latest_article")
+        logger.debug(sitetitle + ": no latest_article")
     if f.entries:
-        logger.warn(site, "Downloading feed")
+        logger.warning(site + ": Downloading feed")
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("sites.yaml", 'w') as stream:
