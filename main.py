@@ -52,5 +52,5 @@ for sitetitle, site in sites.items():
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
-with open("db.yaml", 'w') as stream:
+with open("sites.yaml", 'w') as stream:
     yaml.dump(sites, stream, default_flow_style=False)
