@@ -1,3 +1,4 @@
+import copy
 from time import mktime
 
 import feedparser
@@ -15,19 +16,11 @@ with open("config.yaml", 'r') as stream:
 with open("sites.yaml", 'r') as stream:
     try:
         sites = yaml.load(stream)
+        yaml = copy.deepcopy(sites)
     except (yaml.YAMLError, FileNotFoundError) as exception:
         print(exception)
         sites = None
         exit(1)
-try:
-    with open("db.yaml", 'r') as stream:
-        db = yaml.load(stream)
-except yaml.YAMLError as exception:
-    print(exception)
-    exit(1)
-    db = {}
-except FileNotFoundError as exception:
-    db = {"sites": {}}
 
 token = Wallabag.get_token(**config["wallabag"])
 
@@ -40,15 +33,16 @@ for sitetitle, site in sites.items():
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
     print(sitetitle)
-    if sitetitle not in db["sites"]:
-        db["sites"][sitetitle] = []
-    for article in f.entries:
-        if article.title not in db["sites"][sitetitle]:
+    if site["latest_article"]:
+        for article in f.entries:
+            if article.title == site["latest_article"]:
+                print("already added: " + article.title)
+                break
             print(article.title)
-            tagarray = [sitetitle]
+            taglist = [sitetitle]
             if site["tags"]:
-                tagarray.extend(site["tags"])
-            tags = ",".join(tagarray)
+                taglist.extend(site["tags"])
+            tags = ",".join(taglist)
             if "published_parsed" in article:
                 published = mktime(article.published_parsed)
             elif "updated_parsed" in article:
@@ -56,7 +50,7 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             wall.post_entries(url=article.link, title=article.title, tags=tags)
-            db["sites"][sitetitle].append(article.title)
+    yaml[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("db.yaml", 'w') as stream:
-    yaml.dump(db, stream, default_flow_style=False)
+    yaml.dump(yaml, stream, default_flow_style=False)
