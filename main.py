@@ -6,6 +6,10 @@ import yaml
 from wallabag_api.wallabag import Wallabag
 import github_stars
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 with open("config.yaml", 'r') as stream:
     try:
         config = yaml.load(stream)
@@ -29,15 +33,16 @@ wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"
 sites = github_stars.get_starred_repos(config["github_username"], sites)
 
 for sitetitle, site in sites.items():
+    logger.info(site, "Downloading feed")
     f = feedparser.parse(site["url"])
+    logger.debug(site, "feed parsed")
     # feedtitle = f["feed"]["title"]
-    print(sitetitle)
     if "latest_article" in sites:
         for article in f.entries:
             if article.title == site["latest_article"]:
-                print("already added: " + article.title)
+                logger.debug("already added: " + article.title)
                 break
-            print(article.title)
+            logger.info(article.title, "aricle found")
             taglist = [sitetitle]
             if site["tags"]:
                 taglist.extend(site["tags"])
@@ -48,8 +53,12 @@ for sitetitle, site in sites.items():
                 published = mktime(article.updated_parsed)
             else:
                 published = None
+            logger.debug(article.title, "add to wallabag")
             wall.post_entries(url=article.link, title=article.title, tags=tags)
+    else:
+        logger.debug(site, "no latest_article")
     if f.entries:
+        logger.warn(site, "Downloading feed")
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("sites.yaml", 'w') as stream:
