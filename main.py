@@ -33,7 +33,7 @@ for sitetitle, site in sites.items():
     f = feedparser.parse(site["url"])
     # feedtitle = f["feed"]["title"]
     print(sitetitle)
-    if site["latest_article"]:
+    if "latest_article" in sites:
         for article in f.entries:
             if article.title == site["latest_article"]:
                 print("already added: " + article.title)
