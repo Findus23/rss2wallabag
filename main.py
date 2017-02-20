@@ -5,11 +5,11 @@ import feedparser
 import yaml
 from wallabag_api.wallabag import Wallabag
 import github_stars
-
+import requests
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -35,7 +35,10 @@ sites = github_stars.get_starred_repos(config["github_username"], sites)
 
 for sitetitle, site in sites.items():
     logger.info(sitetitle + ": Downloading feed")
-    f = feedparser.parse(site["url"])
+    r = requests.get(site["url"])
+    logger.info(sitetitle + ": Parsing feed")
+    f = feedparser.parse(r.text)
+    logger.debug(sitetitle + ": finished parsing")
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
         for article in f.entries:
@@ -54,11 +57,10 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             logger.info(article.title + ": add to wallabag")
-            wall.post_entries(url=article.link, title=article.title, tags=tags)
+            # wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
-        logger.warning(sitetitle + ": Downloading feed")
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("sites.yaml", 'w') as stream:
