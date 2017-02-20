@@ -45,7 +45,7 @@ for sitetitle, site in sites.items():
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
                 break
-            logger.info(article.title + ": aricle found")
+            logger.info(article.title + ": article found")
             taglist = [sitetitle]
             if site["tags"]:
                 taglist.extend(site["tags"])
@@ -57,7 +57,7 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             logger.info(article.title + ": add to wallabag")
-            # wall.post_entries(url=article.link, title=article.title, tags=tags)
+            wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
