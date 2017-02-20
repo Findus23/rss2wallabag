@@ -16,7 +16,6 @@ with open("config.yaml", 'r') as stream:
 with open("sites.yaml", 'r') as stream:
     try:
         sites = yaml.load(stream)
-        yaml = copy.deepcopy(sites)
     except (yaml.YAMLError, FileNotFoundError) as exception:
         print(exception)
         sites = None
@@ -50,7 +49,8 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             wall.post_entries(url=article.link, title=article.title, tags=tags)
-    yaml[sitetitle]["latest_article"] = f.entries[0].title
+    if f.entries:
+        sites[sitetitle]["latest_article"] = f.entries[0].title
 
 with open("db.yaml", 'w') as stream:
-    yaml.dump(yaml, stream, default_flow_style=False)
+    yaml.dump(sites, stream, default_flow_style=False)
