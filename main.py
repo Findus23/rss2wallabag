@@ -35,9 +35,9 @@ sites = github_stars.get_starred_repos(config["github_username"], sites)
 
 for sitetitle, site in sites.items():
     logger.info(sitetitle + ": Downloading feed")
-    r = requests.get(site["url"])
+    # r = requests.get(site["url"])
     logger.info(sitetitle + ": Parsing feed")
-    f = feedparser.parse(r.text)
+    f = feedparser.parse(site["url"])
     logger.debug(sitetitle + ": finished parsing")
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
