@@ -7,6 +7,7 @@ from wallabag_api.wallabag import Wallabag
 import github_stars
 import requests
 import logging
+import golem_top
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -57,11 +58,22 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             logger.info(article.title + ": add to wallabag")
-            wall.post_entries(url=article.link, title=article.title, tags=tags)
+             wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
+articles = golem_top.get_top_articles()
+params = {
+    'access_token': wall.token,
+    "urls[]": articles
+}
+response = wall.query("/api/entries/exists.{format}".format(format=wall.format), "get", **params)
+for url, old in response.items():
+    if not old:
+        wall.post_entries(url=url, tags="golem,it")
+
+print(response)
 with open("sites.yaml", 'w') as stream:
     yaml.dump(sites, stream, default_flow_style=False)
