@@ -10,7 +10,7 @@ import logging
 import golem_top
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 with open("config.yaml", 'r') as stream:
     try:
@@ -58,7 +58,7 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             logger.info(article.title + ": add to wallabag")
-             wall.post_entries(url=article.link, title=article.title, tags=tags)
+            wall.post_entries(url=article.link, title=article.title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
