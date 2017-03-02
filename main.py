@@ -58,7 +58,11 @@ for sitetitle, site in sites.items():
             else:
                 published = None
             logger.info(article.title + ": add to wallabag")
-            wall.post_entries(url=article.link, title=article.title, tags=tags)
+            if "github" in site and site["github"]:
+                title = sitetitle + ": " + article.title
+            else:
+                title = article.title
+            wall.post_entries(url=article.link, title=title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
