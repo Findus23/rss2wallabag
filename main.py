@@ -5,7 +5,6 @@ import feedparser
 import yaml
 from wallabag_api.wallabag import Wallabag
 import github_stars
-import requests
 import logging
 import golem_top
 
