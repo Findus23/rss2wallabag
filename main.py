@@ -1,11 +1,12 @@
-import copy
+import logging
 from time import mktime
 
 import feedparser
 import yaml
+from raven import Client
 from wallabag_api.wallabag import Wallabag
+
 import github_stars
-import logging
 import golem_top
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,8 @@ with open("sites.yaml", 'r') as stream:
         print(exception)
         sites = None
         exit(1)
+
+client = Client(config["sentry_url"])
 
 token = Wallabag.get_token(**config["wallabag"])
 
