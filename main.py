@@ -67,16 +67,16 @@ for sitetitle, site in sites.items():
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
-articles = golem_top.get_top_articles()
-params = {
-    'access_token': wall.token,
-    "urls[]": articles
-}
-response = wall.query("/api/entries/exists.{format}".format(format=wall.format), "get", **params)
-for url, old in response.items():
-    if not old:
-        wall.post_entries(url=url, tags="golem,it", title=None)
+#articles = golem_top.get_top_articles()
+#params = {
+#    'access_token': wall.token,
+#    "urls[]": articles
+#}
+#response = wall.query("/api/entries/exists.{format}".format(format=wall.format), "get", **params)
+#for url, old in response.items():
+#    if not old:
+#        wall.post_entries(url=url, tags="golem,it", title=None)
 
-print(response)
+#print(response)
 with open("sites.yaml", 'w') as stream:
     yaml.dump(sites, stream, default_flow_style=False)
