@@ -2,6 +2,7 @@ import logging
 from time import mktime
 
 import feedparser
+import sys
 import yaml
 from raven import Client
 from wallabag_api.wallabag import Wallabag
@@ -9,21 +10,33 @@ from wallabag_api.wallabag import Wallabag
 import github_stars
 import golem_top
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger = logging.getLogger()
+logger.handlers = []
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+ch = logging.StreamHandler(stream=sys.stdout)
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+fh = logging.FileHandler('debug.log')
+fh.setFormatter(formatter)
+fh.setLevel(logging.WARNING)
+logger.addHandler(fh)
+print(logger.handlers)
 
 with open("config.yaml", 'r') as stream:
     try:
         config = yaml.load(stream)
     except (yaml.YAMLError, FileNotFoundError) as exception:
-        print(exception)
+        logger.error(exception)
         config = None
         exit(1)
 with open("sites.yaml", 'r') as stream:
     try:
         sites = yaml.load(stream)
     except (yaml.YAMLError, FileNotFoundError) as exception:
-        print(exception)
+        logger.error(exception)
         sites = None
         exit(1)
 
@@ -69,7 +82,7 @@ for sitetitle, site in sites.items():
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
-            wall.post_entries(url=article.link, title=title, tags=tags)
+                # wall.post_entries(url=article.link, title=title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
