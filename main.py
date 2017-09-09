@@ -15,15 +15,14 @@ logger.handlers = []
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.WARNING)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 fh = logging.FileHandler('debug.log')
 fh.setFormatter(formatter)
-fh.setLevel(logging.WARNING)
+fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
-print(logger.handlers)
 
 with open("config.yaml", 'r') as stream:
     try:
