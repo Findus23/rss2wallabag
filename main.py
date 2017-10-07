@@ -39,12 +39,13 @@ with open("sites.yaml", 'r') as stream:
         sites = None
         exit(1)
 
-client = Client(
-    dsn=config["sentry_url"],
-    processors=(
-        'raven.processors.SanitizePasswordsProcessor',
+if "sentry_url" in config:
+    client = Client(
+        dsn=config["sentry_url"],
+        processors=(
+            'raven.processors.SanitizePasswordsProcessor',
+        )
     )
-)
 
 token = Wallabag.get_token(**config["wallabag"])
 
