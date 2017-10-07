@@ -1,2 +1,2 @@
-# rss2pocket
-A small python script for importing RSS feeds to Pocket
+# rss2wallabag
+A small python script for importing RSS feeds to Wallabag
