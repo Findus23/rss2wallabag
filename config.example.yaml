@@ -1,13 +1,7 @@
-consumer_key: 'CONSUMERKEY'
-access_token: 'ACCESSTOKEN'
-
-sites:
-  sitename:
-    url: "https://www.example.com/blog/rss"
-    tags:
-      - tag
-      - anothertag
-  anothersite:
-    url: "https://www.example.com/feed"
-    tags:
-      - it
+wallabag:
+  host: https://wallabag.example
+  client_id: client_id
+  client_secret: client_secret
+  username: username
+  password: password
+github_username: Findus23
