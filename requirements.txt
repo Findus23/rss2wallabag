@@ -1,6 +1,6 @@
 feedparser==5.2.1
 PyYAML==3.12
-raven==6.2.1
+raven==6.4.0
 requests==2.18.4
 wallabag-api==1.1.0
 beautifulsoup4==4.6.0
