@@ -5,3 +5,4 @@ wallabag:
   username: username
   password: password
 github_username: Findus23
+debug: false

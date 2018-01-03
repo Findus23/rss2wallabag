@@ -13,8 +13,15 @@ logger = logging.getLogger()
 logger.handlers = []
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
+with open("config.yaml", 'r') as stream:
+    try:
+        config = yaml.load(stream)
+    except (yaml.YAMLError, FileNotFoundError) as exception:
+        config = None
+        exit(1)
+
 ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.WARNING)
+ch.setLevel(logging.WARNING if "debug" not in config or not config["debug"] else logging.DEBUG)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
@@ -23,13 +30,6 @@ fh.setFormatter(formatter)
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
-with open("config.yaml", 'r') as stream:
-    try:
-        config = yaml.load(stream)
-    except (yaml.YAMLError, FileNotFoundError) as exception:
-        logger.error(exception)
-        config = None
-        exit(1)
 with open("sites.yaml", 'r') as stream:
     try:
         sites = yaml.load(stream)
@@ -38,7 +38,7 @@ with open("sites.yaml", 'r') as stream:
         sites = None
         exit(1)
 
-if "sentry_url" in config:
+if "sentry_url" in config and ("debug" not in config or not config["debug"]):
     client = Client(
         dsn=config["sentry_url"],
         processors=(
@@ -81,12 +81,12 @@ for sitetitle, site in sites.items():
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
-                wall.post_entries(url=article.link, title=title, tags=tags)
+                if "debug" not in config or not config["debug"]:
+                    wall.post_entries(url=article.link, title=title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
-# print(response)
 with open("sites.yaml", 'w') as stream:
     yaml.dump(sites, stream, default_flow_style=False)

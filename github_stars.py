@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import requests
 
 
@@ -8,6 +6,9 @@ def get_starred_repos(username, feeds):
     stars = r.json()
     for repo in stars:
         if repo["full_name"] not in feeds:
-            feeds[repo["full_name"]] = {"url": repo["html_url"] + "/releases.atom", "tags": ["github", repo["name"]],
-                                        "github": True}
+            feeds[repo["full_name"]] = {
+                "url": repo["html_url"] + "/releases.atom",
+                "tags": ["github", repo["name"]],
+                "github": True
+            }
     return feeds
