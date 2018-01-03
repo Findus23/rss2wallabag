@@ -81,8 +81,8 @@ for sitetitle, site in sites.items():
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
-                if "debug" not in config or not config["debug"]:
-                    wall.post_entries(url=article.link, title=title, tags=tags)
+            if "debug" not in config or not config["debug"]:
+                wall.post_entries(url=article.link, title=title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
