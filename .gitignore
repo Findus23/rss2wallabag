@@ -1,5 +1,6 @@
 .idea/
 config.yaml
-sites.yml
+sites.yaml
 db.yaml
 __pycache__/
+debug.log
