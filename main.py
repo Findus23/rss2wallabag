@@ -1,14 +1,13 @@
-import logging
+import sys
 from time import mktime
 
 import feedparser
-import sys
+import logging
 import yaml
 from raven import Client
 from wallabag_api.wallabag import Wallabag
 
 import github_stars
-import golem_top
 
 logger = logging.getLogger()
 logger.handlers = []
@@ -87,16 +86,6 @@ for sitetitle, site in sites.items():
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
-
-# articles = golem_top.get_top_articles()
-# params = {
-#    'access_token': wall.token,
-#    "urls[]": articles
-# }
-# response = wall.query("/api/entries/exists.{format}".format(format=wall.format), "get", **params)
-# for url, old in response.items():
-#    if not old:
-#        wall.post_entries(url=url, tags="golem,it", title=None)
 
 # print(response)
 with open("sites.yaml", 'w') as stream:
