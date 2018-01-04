@@ -67,18 +67,18 @@ async def main(loop, sites):
 
 
 async def handle_feed(session, wall, sitetitle, site):
-    logger.info(sitetitle + ": Downloading feed")
+    logger.info("Downloading feed: " + sitetitle)
     rss = await fetch(session, site["url"])
-    logger.info(sitetitle + ": Parsing feed")
+    logger.info("Parsing feed: " + sitetitle)
     f = feedparser.parse(rss)
-    logger.debug(sitetitle + ": finished parsing")
+    logger.debug("finished parsing: " + sitetitle)
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
         for article in f.entries:
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
                 break
-            logger.info(article.title + ": article found")
+            logger.info("article found: " + article.title)
             taglist = [sitetitle]
             if site["tags"]:
                 taglist.extend(site["tags"])
@@ -89,7 +89,7 @@ async def handle_feed(session, wall, sitetitle, site):
                 published = mktime(article.updated_parsed)
             else:
                 published = None
-            logger.info(article.title + ": add to wallabag")
+            logger.info("add to wallabag: " + article.title)
             if "github" in site and site["github"]:
                 title = sitetitle + ": " + article.title
             else:
@@ -97,7 +97,7 @@ async def handle_feed(session, wall, sitetitle, site):
             if "debug" not in config or not config["debug"]:
                 await wall.post_entries(url=article.link, title=title, tags=tags)
     else:
-        logger.debug(sitetitle + ": no latest_article")
+        logger.debug("no latest_article: " + sitetitle)
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
