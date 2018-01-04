@@ -1,8 +1,10 @@
+import asyncio
+import logging
 import sys
 from time import mktime
 
+import aiohttp
 import feedparser
-import logging
 import yaml
 from raven import Client
 from wallabag_api.wallabag import Wallabag
@@ -46,18 +48,29 @@ if "sentry_url" in config and ("debug" not in config or not config["debug"]):
         )
     )
 
-token = Wallabag.get_token(**config["wallabag"])
 
-wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
-                client_id=config["wallabag"]["client_id"], token=token)
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
 
-sites = github_stars.get_starred_repos(config["github_username"], sites)
 
-for sitetitle, site in sites.items():
+async def main(loop, sites):
+    token = await Wallabag.get_token(**config["wallabag"])
+
+    async with aiohttp.ClientSession(loop=loop) as session:
+        wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
+                        client_id=config["wallabag"]["client_id"], token=token, aio_sess=session)
+
+        sites = github_stars.get_starred_repos(config["github_username"], sites)
+
+        await asyncio.gather(*[handle_feed(session, wall, sitetitle, site) for sitetitle, site in sites.items()])
+
+
+async def handle_feed(session, wall, sitetitle, site):
     logger.info(sitetitle + ": Downloading feed")
-    # r = requests.get(site["url"])
+    rss = await fetch(session, site["url"])
     logger.info(sitetitle + ": Parsing feed")
-    f = feedparser.parse(site["url"])
+    f = feedparser.parse(rss)
     logger.debug(sitetitle + ": finished parsing")
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
@@ -82,11 +95,15 @@ for sitetitle, site in sites.items():
             else:
                 title = article.title
             if "debug" not in config or not config["debug"]:
-                wall.post_entries(url=article.link, title=title, tags=tags)
+                await wall.post_entries(url=article.link, title=title, tags=tags)
     else:
         logger.debug(sitetitle + ": no latest_article")
     if f.entries:
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
-with open("sites.yaml", 'w') as stream:
-    yaml.dump(sites, stream, default_flow_style=False)
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(loop, sites))
+    with open("sites.yaml", 'w') as stream:
+        yaml.dump(sites, stream, default_flow_style=False)
