@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 from time import mktime
+from urllib.parse import urljoin
 
 import aiohttp
 import feedparser
@@ -75,6 +76,7 @@ async def handle_feed(session, wall, sitetitle, site):
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
         for article in f.entries:
+            print(urljoin(site["url"], article.link))
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
                 break
