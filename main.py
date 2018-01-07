@@ -76,7 +76,6 @@ async def handle_feed(session, wall, sitetitle, site):
     # feedtitle = f["feed"]["title"]
     if "latest_article" in site:
         for article in f.entries:
-            print(urljoin(site["url"], article.link))
             if article.title == site["latest_article"]:
                 logger.debug("already added: " + article.title)
                 break
@@ -97,7 +96,7 @@ async def handle_feed(session, wall, sitetitle, site):
             else:
                 title = article.title
             if "debug" not in config or not config["debug"]:
-                await wall.post_entries(url=article.link, title=title, tags=tags)
+                await wall.post_entries(url=urljoin(site["url"], article.link), title=title, tags=tags)
     else:
         logger.debug("no latest_article: " + sitetitle)
     if f.entries:
