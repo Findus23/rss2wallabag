@@ -52,7 +52,12 @@ if "sentry_url" in config and ("debug" not in config or not config["debug"]):
 
 async def fetch(session, url):
     async with session.get(url) as response:
-        return await response.text()
+        try:
+            return await response.text()
+        except Exception as e:
+            logging.exception("failed to fetch {url}".format(url=url))
+            if client is not None:
+                client.captureException()
 
 
 async def main(loop, sites):
