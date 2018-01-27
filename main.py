@@ -106,7 +106,6 @@ async def handle_feed(session, wall, sitetitle, site):
     else:
         logger.debug("no latest_article: " + sitetitle)
     if f.entries:
-        logger.debug("first fetch, so just checking for the latest article:" + sitetitle)
         sites[sitetitle]["latest_article"] = f.entries[0].title
 
 
