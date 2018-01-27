@@ -103,7 +103,6 @@ async def handle_feed(session, wall, sitetitle, site):
                 title = article.title
             url = urljoin(site["url"], article.link)
             exists = await wall.entries_exists(url)
-            print(exists,url)
             if exists["exists"]:
                 logger.info("already found in wallabag: " + article.title)
             if "debug" not in config or not config["debug"]:
