@@ -58,7 +58,7 @@ async def fetch(session, url):
     except Exception as e:
         logging.exception("failed to fetch {url}".format(url=url))
         if 'client' in locals():
-            client.captureException(data={url:url})
+            client.captureException(data={url: url})
 
 
 async def main(loop, sites):
@@ -101,8 +101,13 @@ async def handle_feed(session, wall, sitetitle, site):
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
+            url = urljoin(site["url"], article.link)
+            exists = await wall.entries_exists(url)
+            print(exists,url)
+            if exists["exists"]:
+                logger.info("already found in wallabag: " + article.title)
             if "debug" not in config or not config["debug"]:
-                await wall.post_entries(url=urljoin(site["url"], article.link), title=title, tags=tags)
+                await wall.post_entries(url=url, title=title, tags=tags)
     else:
         logger.debug("no latest_article: " + sitetitle)
     if f.entries:
