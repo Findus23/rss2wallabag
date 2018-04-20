@@ -48,8 +48,6 @@ async def fetch(session, url):
             return await response.text()
     except Exception as e:
         logging.exception("failed to fetch {url}".format(url=url))
-        if 'client' in locals():
-            client.captureException(data={url: url})
 
 
 async def main(loop, sites):
