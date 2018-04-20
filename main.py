@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 import aiohttp
 import feedparser
 import yaml
-from raven import Client
 from wallabag_api.wallabag import Wallabag
 
 import github_stars
@@ -41,14 +40,6 @@ with open("sites.yaml", 'r') as stream:
         logger.error(exception)
         sites = None
         exit(1)
-
-if "sentry_url" in config and ("debug" not in config or not config["debug"]):
-    client = Client(
-        dsn=config["sentry_url"],
-        processors=(
-            'raven.processors.SanitizePasswordsProcessor',
-        )
-    )
 
 
 async def fetch(session, url):
