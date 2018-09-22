@@ -7,6 +7,9 @@ from urllib.parse import urljoin
 import aiohttp
 import feedparser
 import yaml
+from raven import Client
+from raven.handlers.logging import SentryHandler
+from raven.conf import setup_logging
 from wallabag_api.wallabag import Wallabag
 
 import github_stars
@@ -32,6 +35,17 @@ fh = logging.FileHandler('debug.log')
 fh.setFormatter(formatter)
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
+
+if "sentry_url" in config and ("debug" not in config or not config["debug"]):
+    client = Client(
+        dsn=config["sentry_url"],
+        processors=(
+            'raven.processors.SanitizePasswordsProcessor',
+        )
+    )
+    handler = SentryHandler(client)
+    handler.setLevel(logging.WARNING)
+    setup_logging(handler)
 
 with open("sites.yaml", 'r') as stream:
     try:
