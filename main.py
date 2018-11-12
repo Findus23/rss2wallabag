@@ -119,5 +119,6 @@ async def handle_feed(session, wall, sitetitle, site):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop, sites))
-    with open("sites.yaml", 'w') as stream:
-        yaml.dump(sites, stream, default_flow_style=False)
+    if "debug" not in config or not config["debug"]:
+        with open("sites.yaml", 'w') as stream:
+            yaml.dump(sites, stream, default_flow_style=False)
