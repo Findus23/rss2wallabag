@@ -104,6 +104,9 @@ async def handle_feed(session, wall, sitetitle, site):
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
+            if not hasattr(article, 'link'):
+                logger.info("no link, skipping!")
+                continue          
             url = urljoin(site["url"], article.link)
             exists = await wall.entries_exists(url)
             if exists["exists"]:
