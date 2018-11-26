@@ -71,7 +71,8 @@ async def main(loop, sites):
         wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
                         client_id=config["wallabag"]["client_id"], token=token, aio_sess=session)
 
-        sites = github_stars.get_starred_repos(config["github_username"], sites)
+        if "github_username" in config:
+            sites = github_stars.get_starred_repos(config["github_username"], sites)
 
         await asyncio.gather(*[handle_feed(session, wall, sitetitle, site) for sitetitle, site in sites.items()])
 
