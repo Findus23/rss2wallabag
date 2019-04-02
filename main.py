@@ -21,7 +21,7 @@ logger.setLevel(logging.DEBUG)
 
 with open("config.yaml", 'r') as stream:
     try:
-        config = yaml.load(stream)
+        config = yaml.safe_load(stream)
     except (yaml.YAMLError, FileNotFoundError) as exception:
         config = None
         exit(1)
@@ -49,7 +49,7 @@ if "sentry_url" in config and ("debug" not in config or not config["debug"]):
 
 with open("sites.yaml", 'r') as stream:
     try:
-        sites = yaml.load(stream)
+        sites = yaml.safe_load(stream)
     except (yaml.YAMLError, FileNotFoundError) as exception:
         logger.error(exception)
         sites = None

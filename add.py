@@ -3,7 +3,7 @@ import yaml
 from urllib.parse import urlparse
 
 with open("sites.yaml", 'r') as stream:
-    sites = yaml.load(stream)
+    sites = yaml.safe_load(stream)
 
 try:
     name = sys.argv[1]
