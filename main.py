@@ -71,7 +71,8 @@ async def main(loop, sites):
         wall = Wallabag(host=config["wallabag"]["host"], client_secret=config["wallabag"]["client_secret"],
                         client_id=config["wallabag"]["client_id"], token=token, aio_sess=session)
 
-        sites = github_stars.get_starred_repos(config["github_username"], sites)
+        if "github_username" in config:
+            sites = github_stars.get_starred_repos(config["github_username"], sites)
 
         await asyncio.gather(*[handle_feed(session, wall, sitetitle, site) for sitetitle, site in sites.items()])
 
@@ -104,6 +105,9 @@ async def handle_feed(session, wall, sitetitle, site):
                 title = sitetitle + ": " + article.title
             else:
                 title = article.title
+            if not hasattr(article, 'link'):
+                logger.info("no link, skipping!")
+                continue          
             url = urljoin(site["url"], article.link)
             exists = await wall.entries_exists(url)
             if exists["exists"]:
