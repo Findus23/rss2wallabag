@@ -59,7 +59,7 @@ with open("sites.yaml", 'r') as stream:
 async def fetch(session, url):
     try:
         async with session.get(url) as response:
-            return await response.text()
+            return await response.text('utf-8')
     except Exception as e:
         logging.exception("failed to fetch {url}".format(url=url))
 
