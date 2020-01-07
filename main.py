@@ -24,17 +24,19 @@ with open("config.yaml", 'r') as stream:
         config = None
         exit(1)
 
+production = "debug" not in config or not config["debug"]
+
 ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.WARNING if "debug" not in config or not config["debug"] else logging.DEBUG)
+ch.setLevel(logging.WARNING if production else logging.DEBUG)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 fh = logging.FileHandler('debug.log')
 fh.setFormatter(formatter)
-fh.setLevel(logging.WARNING if "debug" not in config or not config["debug"] else logging.DEBUG)
+fh.setLevel(logging.WARNING if production else logging.DEBUG)
 logger.addHandler(fh)
 
-if "sentry_url" in config and ("debug" not in config or not config["debug"]):
+if "sentry_url" in config and (production):
     sentry_sdk.init(dsn=config["sentry_url"])
 
 with open("sites.yaml", 'r') as stream:
@@ -102,8 +104,10 @@ async def handle_feed(session, wall, sitetitle, site):
             exists = await wall.entries_exists(url)
             if exists["exists"]:
                 logger.info("already found in wallabag: " + article.title)
-            if "debug" not in config or not config["debug"]:
+            if production:
                 await wall.post_entries(url=url, title=title, tags=tags)
+            else:
+                logger.info("warning: running in debug mode - not adding links to wallabag")
     else:
         logger.debug("no latest_article: " + sitetitle)
     if f.entries:
@@ -113,6 +117,6 @@ async def handle_feed(session, wall, sitetitle, site):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop, sites))
-    if "debug" not in config or not config["debug"]:
+    if production:
         with open("sites.yaml", 'w') as stream:
             yaml.dump(sites, stream, default_flow_style=False)
