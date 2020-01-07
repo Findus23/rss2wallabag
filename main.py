@@ -31,7 +31,7 @@ logger.addHandler(ch)
 
 fh = logging.FileHandler('debug.log')
 fh.setFormatter(formatter)
-fh.setLevel(logging.DEBUG)
+fh.setLevel(logging.WARNING if "debug" not in config or not config["debug"] else logging.DEBUG)
 logger.addHandler(fh)
 
 if "sentry_url" in config and ("debug" not in config or not config["debug"]):
