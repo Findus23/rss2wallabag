@@ -60,7 +60,12 @@ description = "Universal feed parser, handles RSS 0.9x, RSS 1.0, RSS 2.0, CDF, A
 name = "feedparser"
 optional = false
 python-versions = "*"
-version = "5.2.1"
+version = "6.0.0b1"
+
+[package.dependencies]
+[package.dependencies.sgmllib3k]
+python = ">=3.0"
+version = "*"
 
 [[package]]
 category = "main"
@@ -132,6 +137,15 @@ tornado = ["tornado (>=5)"]
 
 [[package]]
 category = "main"
+description = "Py3k port of sgmllib."
+marker = "python_version >= \"3.0\""
+name = "sgmllib3k"
+optional = false
+python-versions = "*"
+version = "1.0.0"
+
+[[package]]
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -167,7 +181,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "dd133905a80975dbf9c64facde0b2dd7680488f2e549805b585b6dfb0229bb8a"
+content-hash = "d370238d5cce13de7e2d9c2c0d9a4040a4a406322d2e9ebf38d8cf97e49dc18b"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -202,9 +216,8 @@ chardet = [
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
 feedparser = [
-    {file = "feedparser-5.2.1.tar.bz2", hash = "sha256:ce875495c90ebd74b179855449040003a1beb40cd13d5f037a0654251e260b02"},
-    {file = "feedparser-5.2.1.tar.gz", hash = "sha256:bd030652c2d08532c034c27fcd7c85868e7fa3cb2b17f230a44a6bbc92519bf9"},
-    {file = "feedparser-5.2.1.zip", hash = "sha256:cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c"},
+    {file = "feedparser-6.0.0b1-py2.py3-none-any.whl", hash = "sha256:87185443d6e12cf870125bdc9211168c60895e7dd7209b5c082897ddb1b11efb"},
+    {file = "feedparser-6.0.0b1.tar.gz", hash = "sha256:150ccca4cfc3481f7ff503988a91bbdbbbc3406d6444bfe9cfe6c1001d378e73"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
@@ -249,6 +262,9 @@ requests = [
 sentry-sdk = [
     {file = "sentry-sdk-0.13.5.tar.gz", hash = "sha256:c6b919623e488134a728f16326c6f0bcdab7e3f59e7f4c472a90eea4d6d8fe82"},
     {file = "sentry_sdk-0.13.5-py2.py3-none-any.whl", hash = "sha256:05285942901d38c7ce2498aba50d8e87b361fc603281a5902dda98f3f8c5e145"},
+]
+sgmllib3k = [
+    {file = "sgmllib3k-1.0.0.tar.gz", hash = "sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.7-py2.py3-none-any.whl", hash = "sha256:a8a318824cc77d1fd4b2bec2ded92646630d7fe8619497b142c84a9e6f5a7293"},
