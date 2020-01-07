@@ -6,10 +6,8 @@ from urllib.parse import urljoin
 
 import aiohttp
 import feedparser
+import sentry_sdk
 import yaml
-from raven import Client
-from raven.handlers.logging import SentryHandler
-from raven.conf import setup_logging
 from wallabag_api.wallabag import Wallabag
 
 import github_stars
@@ -37,15 +35,7 @@ fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
 if "sentry_url" in config and ("debug" not in config or not config["debug"]):
-    client = Client(
-        dsn=config["sentry_url"],
-        processors=(
-            'raven.processors.SanitizePasswordsProcessor',
-        )
-    )
-    handler = SentryHandler(client)
-    handler.setLevel(logging.WARNING)
-    setup_logging(handler)
+    sentry_sdk.init(dsn=config["sentry_url"])
 
 with open("sites.yaml", 'r') as stream:
     try:
@@ -107,7 +97,7 @@ async def handle_feed(session, wall, sitetitle, site):
                 title = article.title
             if not hasattr(article, 'link'):
                 logger.info("no link, skipping!")
-                continue          
+                continue
             url = urljoin(site["url"], article.link)
             exists = await wall.entries_exists(url)
             if exists["exists"]:
