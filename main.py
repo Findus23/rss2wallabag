@@ -150,7 +150,7 @@ def handle_feed(api: WallabagAPI, site: Site, logger: logging.Logger, config: Co
         if api.check_exist(url):
             logger.info("already found in wallabag: " + article.title)
             continue
-        if config.production or True:
+        if config.production:
             print(published)
             api.add_entry(url=url, title=title, tags=taglist, published=published)
         else:
