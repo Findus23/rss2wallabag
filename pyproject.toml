@@ -6,11 +6,9 @@ authors = ["Lukas Winkler <git@lw1.at>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-wallabag-api = "^1.2.3"
-feedparser = "6.0.0b1"
+feedparser = "^6.0.2"
 PyYAML = "^5.3"
 requests = "^2.22.0"
-sentry-sdk = "^0.13.5"
 
 [tool.poetry.dev-dependencies]
 
