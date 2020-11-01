@@ -151,7 +151,6 @@ def handle_feed(api: WallabagAPI, site: Site, logger: logging.Logger, config: Co
             logger.info("already found in wallabag: " + article.title)
             continue
         if config.production:
-            print(published)
             api.add_entry(url=url, title=title, tags=taglist, published=published)
         else:
             logger.info("warning: running in debug mode - not adding links to wallabag")
