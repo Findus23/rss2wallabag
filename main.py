@@ -46,6 +46,7 @@ class Site:
     github: bool
     tags: List[str]
     latest_article: Optional[str]
+    filter: Optional[str]
 
 
 def load_sites() -> Dict[str, Site]:
@@ -57,6 +58,8 @@ def load_sites() -> Dict[str, Site]:
             entry["latest_article"] = None
         if "github" not in entry:
             entry["github"] = None
+        if "filter" not in entry:
+           entry["filter"] = None      
         sites[title] = Site(title, **entry)
     return sites
 
@@ -128,6 +131,9 @@ def handle_feed(api: WallabagAPI, site: Site, logger: logging.Logger, config: Co
         if article.title == site.latest_article:
             logger.debug("already added: " + article.title)
             break
+        if site.filter and not site.filter in article.title:
+            logger.debug("article filtered: " + article.title)
+            continue
         logger.info("article found: " + article.title)
         taglist = [site.title]
         if site.tags:
